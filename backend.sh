@@ -60,7 +60,7 @@ validate $? "unzip the backend code"
 npm install &>>$LOGFILE
 validate $? "downloading node js dependencies"
 
-cp /home/ec2-user/shell-script/expense-shell-1/backend.service /etc/systemd/system/backend.service &>>$LOGFILE
+cp /home/ec2-user/expense-shell-1/backend.service /etc/systemd/system/backend.service &>>$LOGFILE
 validate $? "create backend service"
 systemctl daemon-reload &>>$LOGFILE
 validate $? "daemon reload"
