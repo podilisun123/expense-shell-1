@@ -21,19 +21,23 @@ N="\e[0m"
 validate(){
     if [ $1 -ne 0 ]
     then
-        echo -e "$2 installation $R..FAILURE $N"
+        echo -e "$2.. $R..FAILURE $N"
         exit 1
     else 
-        echo -e "$2 installation ..$G SUCCESS $N"
+        echo -e "$2 ..$G SUCCESS $N"
     fi
 }
 dnf module disable nodejs -y &>>$LOGFILE
 validate $? "disabling nodejs"
+
 dnf module enable nodejs:20 -y &>>$LOGFILE
 validate $? "enabling nodejs"
+
 dnf install nodejs -y &>>$LOGFILE
 validate $? "instaling nodejs"
-id expense
+
+id expense &>>$LOGFILE
+
 if [ $? -ne 0 ]
 then 
     useradd expense &>>$LOGFILE
@@ -41,17 +45,22 @@ then
 else
     echo "expense user already created $Y SKIPPING $N"
 fi
-mkdir -d /app &>>$LOGFILE
+
+mkdir -p /app &>>$LOGFILE
 validate $? "creating application directory"
+
 curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE
 validate $? "downloading nodejs code"
+
 cd /app 
 rm -rf /app/*
+
 unzip /tmp/backend.zip &>>$LOGFILE
 validate $? "unzip the backend code"
 npm install &>>$LOGFILE
 validate $? "downloading node js dependencies"
-cp /home/ec2-user/expense-shell-1/backend.service /etc/systemd/system &>>$LOGFILE
+
+cp /home/ec2-user/shell-script/expense-shell-1/backend.service /etc/systemd/system/backend.service &>>$LOGFILE
 validate $? "create backend service"
 systemctl daemon-reload &>>$LOGFILE
 validate $? "daemon reload"
